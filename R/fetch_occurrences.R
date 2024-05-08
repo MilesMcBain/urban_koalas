@@ -10,7 +10,7 @@
 #' @param study_species the output of `search_taxa()` on a species query
 #' @return a tibble
 #' @author Miles McBain
-fetch_occurences <- function(study_species, study_date) {
+fetch_occurrences <- function(study_species, study_date) {
   occurences <-
     galah_call() |>
     identify(study_species) |>

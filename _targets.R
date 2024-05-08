@@ -16,7 +16,7 @@ tar_plan(
   study_date = ymd("2024-05-08"),
   tar_target(
      occurrences,
-     fetch_occurences(
+     fetch_occurrences(
        study_species,
        study_date
      )
