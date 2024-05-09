@@ -8,12 +8,6 @@ output:
 ---
 
 
-```{css, echo = FALSE}
-  .main-container {
-    max-width: 1600px !important;
-  }
-```
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 source(here::here("packages.R"))
@@ -81,7 +75,7 @@ binning layers were constructed each covering a 4-year span of the last 12
 years. The colour scale of each layer remains relative to the highest observed hexagon
 count, aiding comparison. These can be toggled individually.
 
-```{r, fig.align="center", out.width="1080px", out.height="720px"}
+```{r, fig.align="center", out.width="100%", out.height="720px"}
 tar_read(rd_brisbane_occurrences)
 ```
 
