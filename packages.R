@@ -12,7 +12,10 @@ library(ggplot2)
 library(dplyr)
 library(here)
 library(rdeck)
-
+library(h3jsr)
+library(ggspatial)
+library(glue)
+library(santoku)
 
 conflicts_prefer(
   dplyr::filter

@@ -12,10 +12,7 @@ plot_park_poly <- function(
       st_geometry(park_polygon),
       reference_point
     ) |>
-    st_bbox() |>
-    st_as_sfc() |>
-    st_transform(crs = "+proj=utm +zone=56 +south") |> # MGA Zone 56
-    st_buffer(2000) # for spatital context
+    buffered_bbox(2000)
 
 
   ggplot() +
@@ -30,5 +27,8 @@ plot_park_poly <- function(
       fill = NA,
       linewidth = 2
     ) +
-    theme_cropped_map()
+    theme_cropped_map() +
+    annotation_north_arrow(location = "tl")
 }
+
+

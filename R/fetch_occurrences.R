@@ -15,8 +15,9 @@ fetch_occurrences <- function(study_species, study_date) {
     galah_call() |>
     identify(study_species) |>
     galah_filter(
-      cl10929 == "GREATER BRISBANE"
-      ) |>
+      cl10929 == "GREATER BRISBANE",
+      occurrenceStatus == "PRESENT"
+    ) |>
     select(
       recordID,
       eventDate,
