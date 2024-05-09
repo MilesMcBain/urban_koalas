@@ -13,7 +13,14 @@ A number of techniques are showcased:
 
 The root of the project is the `_targets.R` file that defines the pipeline plan.
 
+With the working dir set to the repository root, the  `targets::tar_make()` command will build the pipeline, and render the main report output: `docs/index.html`
+
 The R package dependencies are described in the `renv.lock` file which can be used to reproduce package environment if desired.
+
+# Output
+
+The report output by this pipeline is served from this repository here: https://milesmcbain.github.io/urban_koalas/
+
 
 # External Dependencies
 
