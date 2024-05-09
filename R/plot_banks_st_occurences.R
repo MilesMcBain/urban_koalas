@@ -9,7 +9,7 @@ plot_banks_st_occurrences <- function(
 
   map_area <-
     banks_st_reserve_poly |>
-    buffered_bbox(50)
+    buffered_bbox(200)
 
   map_data <-
     spatial_occurrences |>

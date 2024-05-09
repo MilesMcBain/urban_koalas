@@ -28,10 +28,7 @@ tar_plan(
   # Assorted extra geospatial datasets
   # - park boundaries
   # - plotting reference points
-  tar_file(
-    alexander_clark_park_boundary,
-    "data/alexander_clark_park.geojson"
-  ),
+  # - trail course
   tar_file(
     banks_st_reserve_boundary,
     "data/banks_st_reserve.geojson"
@@ -53,10 +50,6 @@ tar_plan(
     brisbane()
   ),
   tar_target(
-    logan_reference_point,
-    logan()
-  ),
-  tar_target(
     spatial_occurrences,
     create_spatial_occurrences(
       occurrences,
@@ -76,7 +69,7 @@ tar_plan(
     )
   ),
   tar_target(
-    gg_banks_run_and_occurrences_5yr,
+    gg_banks_run_and_occurrences_6yr,
     plot_banks_st_occurrences(
       banks_st_reserve_poly,
       spatial_occurrences,
@@ -116,12 +109,5 @@ tar_plan(
       spatial_temporal_hexbin_occurrence_counts
     )
   ),
-  tar_render(report, "doc/report.Rmd")
+  tar_render(report, "doc/index.Rmd")
 )
-
-# TODO tooltips
-# heat map
-# raw occurrence with blending
-# hex layers spanning different periods
-# hex layer for all
-# rdeck.controls

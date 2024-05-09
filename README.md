@@ -6,6 +6,7 @@ A number of techniques are showcased:
   - Static maps using `{ggplot2}` see `R/plot_banks_st_occurences.R`
     - Many of the packages in this workflow were built out by myself and ex-colleagues at QFES
   - Interactive mapping using a variety of layer types using the `{rdeck}` bindings to Uber's deck.gl framework. See `R/map_brisbane_occurences.R`
+    - Built by my ex-colleague @anthonynorth
   - Using the h3 spatial index system to create aggregations for visualisation. See:
     - `R/create_spatial_occurences.R`
     - `R/R/make_spatial_temporal_hex_counts.R`

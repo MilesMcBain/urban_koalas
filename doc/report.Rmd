@@ -1,28 +1,102 @@
 ---
-title: "Untitled Draft"
-author: "Report Author"
+title: "Species Distribution mapping examples with R"
+author: "Miles McBain"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+output:
+  html_document:
+    theme: flatly
 ---
+
+
+```{css, echo = FALSE}
+  .main-container {
+    max-width: 1600px !important;
+  }
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 source(here::here("packages.R"))
-tar_source()
+tar_load(study_species)
 ```
 
 
-## A ggplot map
+# Introduction
 
-```{r}
+This is Bank St Reserve. It's a popular park in the inner north of Brisbane that
+is home to a small colony of `r study_species$species` (`r study_species$vernacular_name`).
+There are large signs marking the space as Koala habitat near all public entrances, but unfortunately people walking dogs
+off leashes through the reserve is common. [Attacks from dogs are a major source
+of Koala mortality in Greater Brisbane](https://environment.desi.qld.gov.au/wildlife/animals/living-with/koalas/threats).
+
+```{r, fig.cap = "Banks St Reserve, Newmarket, Brisbane", fig.align = "center"}
 tar_read(gg_banks_st)
 ```
 
-## An rdeck map
+Despite using Banks St as a weekly trail running track for the past six
+years, the authors of this paper have observed a Koala but once, when it was pointed out by a
+wildlife photographer. Recorded observations from the _Atlas of Living
+Australia_ (ALA) for this area show why instance was potentially lucky. Koalas tend to
+favour the middle of the reserve, whereas the best running is to be had around
+the outside.
 
-```{r}
-tar_read(rd_banks_st)
+```{r, fig.cap = "This author's commonly used trail in pink, overlaid with hexbinned counts of recorded observations over the last 6 years", fig.align = "center"}
+tar_read(gg_banks_run_and_occurrences_6yr)
 ```
+
+An examination of the timstamps of the ALA sightings recorded for this location
+showed they peaked in 2018 and have been in decline since. It is unclear whether
+this is due to a decline in population, or a decline in interest from citizen
+scientists. This question modtivated a study of the species spatial and temporal
+distribution for Greater Brisbane.
+
+```{r, fig.cap="Recorded Koala observations in Banks St reserve are in decline over recent years.", fig.align="center"}
+tar_read(gg_bank_st_observation_time_series)
+```
+
+# Distribution of `r study_species$species` across Greater Brisbane
+
+Here we present an interactive map designed to display the distribution of
+`r study_species$species` across Brisbane, and look at the question of declining observarions.
+
+The map contains many layers which can be toggled on and off using the layer control
+in the top left corner. The layer initially selected displays counts of all
+recorded ocurrences binned using hexagonal spatial regions. This is useful for
+comparison at the suburb to city level, but detail is lost when zooming too far
+either in or out.
+
+To observe different levels of distribtion detail the reader may try viewing:
+
+  - A point cloud layer of individual observation locations which has a 'heat
+    map' like effect when zoomed out due to the application of additive colour
+    blending. The points can be picked using the mouse cursor, which will
+    display a tooltip containing some metadata relating to the observation.
+  - A dynamically computed heat map layer, which recomputes a 2-dimensional
+    kernel density when the map is zoomed. It is useful for understanding relative
+    frequency of occurence given the frame of refrence defined by the currently
+    zoomed map window. It displays interesting detail at all levels of zoom.
+
+To examine the question of the temporal distribution, a series of hexagonal
+binning layers were constructed each covering a 4-year span of the last 12
+years. The colour scale of each layer remains relative to the highest observed hexagon
+count, aiding comparison. These can be toggled individually.
+
+```{r, fig.align="center", out.width="1080px", out.height="720px"}
+tar_read(rd_brisbane_occurrences)
+```
+
+# Conclusion
+
+Using our temporal series of hexagonal binning layers it was observed that while
+observed counts of `r study_species$species` declined in the intial area of
+interest at Banks St, this trend was not apparent in other 'hot spots' like the
+Toohey Forest or Mount Gravatt Outlook Reserve south of the river, which showed
+a marked increase in observations during the last 4-year period over the period prior.
+
+We thus conclude that the decline of observations in Banks St Reserve is
+unlikely to be associated with some general trend in declining interest from
+citizen scientists. Further study of the area to assess the health of the `r study_species$species`
+population is recommended.
 
 ## Reproducibility
 

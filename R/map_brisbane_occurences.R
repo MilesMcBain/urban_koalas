@@ -48,6 +48,7 @@ map_brisbane_occurrences <- function(
       name = "Dynamic heatmap",
       data = spatial_occurrences,
       get_position = geometry,
+      visible = FALSE
     ) |>
     add_point_cloud_layer(
       name = "Point cloud (blended)",
@@ -68,7 +69,7 @@ map_brisbane_occurrences <- function(
       get_fill_color = scale_color_log(
         col = occurrence_count
       ),
-      visible = FALSE,
+      visible = TRUE,
       tooltip = "occurrence_count",
       pickable = TRUE,
       opacity = 0.7
