@@ -109,5 +109,5 @@ tar_plan(
       spatial_temporal_hexbin_occurrence_counts
     )
   ),
-  tar_render(report, "doc/index.Rmd")
+  tar_render(report, "docs/index.Rmd")
 )
