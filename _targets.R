@@ -2,12 +2,6 @@
 source("./packages.R")
 
 ## Set options
-options(
-)
-galah_config(
-  atlas = "ALA",
-  email = Sys.getenv("ALA_EMAIL")
-)
 # use env var to avoid credential leakage
 
 # load sources in ./R
@@ -15,8 +9,6 @@ tar_source()
 
 tar_plan(
   # Species data
-  study_species = search_taxa("Phascolarctos cinereus"),
-  study_date = ymd("2024-05-08"),
   tar_target(
     occurrences,
     fetch_occurrences(
@@ -53,7 +45,7 @@ tar_plan(
     spatial_occurrences,
     create_spatial_occurrences(
       occurrences,
-      h3_hex_resolutions = c(8, 9, 10, 11)
+      h3_hex_resolutions = c(7, 8, 9, 10, 11)
     )
   ),
 
@@ -94,7 +86,7 @@ tar_plan(
     spatial_temporal_hexbin_occurrence_counts,
     make_spatial_temporal_hex_counts(
       spatial_occurrences,
-      h3_index_col = h3_hex_9
+      h3_index_col = h3_hex_7
     )
   ),
   ### Map

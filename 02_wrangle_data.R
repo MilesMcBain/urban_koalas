@@ -53,22 +53,8 @@ occurrences_weather <-
   )
 
 # Add spatial H3 hex indices
+source("R/compute_h3_indices_at_resolutions.R")
 h3_hex_resolutions <- c(7,8,9)
-compute_h3_indices_at_resolutions <- function(
-  resolutions,
-  point_geometry
-) {
-  lapply(
-    resolutions,
-    \(res, geometry) {
-      point_to_cell(geometry, res = res)
-    },
-    point_geometry
-  ) |>
-    setNames(paste0("h3_hex_", resolutions)) |>
-    as.data.frame()
-}
-
 occurrences_weather_hexes <-
   st_as_sf(
     occurrences_weather,

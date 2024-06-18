@@ -7,6 +7,7 @@ library(tidyr)
 library(tibble)
 library(sf)
 library(purrr)
+library(pROC)
 
 conflicts_prefer(
   tidyr::unnest
@@ -29,18 +30,21 @@ occurrence_training_data <-
     scientificName = as.factor(scientificName)
   )
 
-# TODO test/train split
-
-N_CV_FOLDS <- 2
 set.seed(2048)
+# test/train split
+test_train_split <-
+  initial_split(occurrence_training_data)
+
+# N fold SV of training set so we can get distribution of performance measures
+N_CV_FOLDS <- 5
 occurrence_cv_splits <-
-  vfold_cv(occurrence_training_data, v = 5, repeats = 1)
+  vfold_cv(training(test_train_split), v = 5, repeats = 1)
 
-split <- occurrence_cv_splits$splits[[1]]
-
+# Hyperparameter space
 mtry_candidates <- c(1, 2, 3)
 num_trees_candidates <- c(200, 500, 100)
 
+# Each combination of hyper parameters gets an n-fold-cv fit
 training_grid <-
   expand.grid(
     fold_id = occurrence_cv_splits$id,
@@ -53,6 +57,8 @@ training_grid <-
     by = c(fold_id = "id")
   )
 
+# A function that fits a single fold of data with a single set of hyperpameters
+# 2 performance measures are reported: AUC and Accuracy
 fit_fold_calc_results <- function(split, num_trees, mtry) {
   model <-
     randomForest(
@@ -85,12 +91,14 @@ fit_fold_calc_results <- function(split, num_trees, mtry) {
 
   # use auc and accuracy as our summary statistics
   data.frame(
-      auc = auc(roc_object) |> as.numeric(),
-      accuracy = sum(test_set$is_moluccus > 0.5 & test_set$is_moluccus == 1) / nrow(test_set)
+    auc = auc(roc_object) |> as.numeric(),
+    accuracy = sum(test_set$is_moluccus > 0.5 & test_set$is_moluccus == 1) / nrow(test_set)
   )
 }
 
-# Can take a while on a single core
+# Fit model to every entry in training grid
+# Can take a while on a single core...
+# To go multi-core we could swap purrr iterator for furrr version.
 training_results <-
   training_grid |>
   mutate(
@@ -102,7 +110,7 @@ training_results <-
       ),
       .f = fit_fold_calc_results
     ) |>
-    bind_rows()
+      bind_rows()
     # by returning a dataframe inside mutate, the resulting columns are appended to training_grid
   )
 
@@ -110,16 +118,47 @@ summarised_training_results <-
   training_results |>
   summarise(
     mean_auc = mean(auc),
+    sd_auc = sd(auc),
     mean_accuracy = mean(accuracy),
+    sd_accuracy = sd(accuracy),
     .by = c(mtry, num_trees)
   ) |>
   arrange(-mean_auc)
 
 # Our best model by AUC is not row 1
-best_model <-
+# Train best model
+species_classification_model <-
   randomForest(
-
+    scientificName ~ .,
+    data = training(test_train_split),
+    mtry = first(summarised_training_results$mtry),
+    ntree = first(summarised_training_results$num_trees)
   )
+saveRDS(species_classification_model, "output/species_classification.Rds")
 
-function() {
-}
+# Save our validation set so we can visualise performance
+model_validation_data <-
+  testing(test_train_split)
+
+class_predictions <-
+  predict(
+    species_classification_model,
+    newdata = model_validation_data,
+  )
+probability_predictions <-
+  predict(
+    species_classification_model,
+    newdata = model_validation_data,
+    type = "prob"
+  ) |>
+  as.data.frame() |>
+  setNames(c("prob_moluccus", "prob_spinicollis"))
+
+model_validation_predictions <-
+  model_validation_data |>
+  mutate(
+    predicted_class = class_predictions
+  ) |>
+  bind_cols(probability_predictions)
+
+saveRDS(model_validation_predictions, "output/model_validation_predicitons.Rds")
